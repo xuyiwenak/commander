@@ -31,8 +31,13 @@ ssh bn "bash -lc '
   export NVM_DIR=\"\$HOME/.nvm\"
   if [ -s \"\$NVM_DIR/nvm.sh\" ]; then
     . \"\$NVM_DIR/nvm.sh\"
-    nvm use 20 >/dev/null || echo \"[WARN] nvm node 20 not found, fallback to current node\"
+    if ! nvm use 20 >/dev/null; then
+      echo \"[WARN] nvm node 20 not found, fallback to nvm default\"
+      nvm use default >/dev/null || true
+    fi
   fi
+
+  echo \"FINAL_NODE=\$(node -v) \$(which node)\"
 
   NODE_MAJOR=\$(node -v | sed -E \"s/^v([0-9]+).*/\\1/\")
   if [ \"\$NODE_MAJOR\" -lt 20 ]; then
