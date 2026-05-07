@@ -7,11 +7,15 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
-  // 生产部署在 Nginx /admin/ 子路径下
-  base: '/admin/',
+  // Commander 使用专属域名，根路径访问
+  base: '/',
   server: {
-    port: 5174,
+    port: 5175,
     proxy: {
+      '/api': {
+        target: 'http://localhost:42002',
+        changeOrigin: true,
+      },
       '/begreat-admin': {
         target: 'http://localhost:41002',
         changeOrigin: true,
