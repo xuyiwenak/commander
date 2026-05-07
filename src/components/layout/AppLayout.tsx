@@ -4,7 +4,7 @@ import {
   DashboardOutlined,
   MonitorOutlined,
   TeamOutlined,
-  ImageOutlined,
+  PictureOutlined,
   MessageOutlined,
   FileTextOutlined,
   PayCircleOutlined,
@@ -28,7 +28,7 @@ const COMMON_NAV = [
 
 const MANDIS_NAV = [
   { key: '/mandis/users',    icon: <TeamOutlined />,     label: '用户管理' },
-  { key: '/mandis/works',    icon: <ImageOutlined />,     label: '作品管理' },
+  { key: '/mandis/works',    icon: <PictureOutlined />,    label: '作品管理' },
   { key: '/mandis/feedback', icon: <MessageOutlined />,   label: '反馈管理' },
 ];
 
