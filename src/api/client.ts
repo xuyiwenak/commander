@@ -55,7 +55,7 @@ http.interceptors.response.use(
     if (err.response?.status === 401) {
       const app = useAppStore.getState().currentApp;
       useAuthStore.getState().clearAuth(app);
-      window.location.href = '/login';
+      window.location.href = `/login/${app}`;
     }
     return Promise.reject(err);
   },

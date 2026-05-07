@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layout, Menu, Button, Avatar, Typography, Segmented } from 'antd';
+import { Layout, Menu, Button, Avatar, Typography } from 'antd';
 import {
   DashboardOutlined,
   MonitorOutlined,
@@ -15,7 +15,7 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useAppStore, type AppName } from '@/store/appStore';
+import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 
 const { Sider, Header, Content } = Layout;
@@ -41,16 +41,16 @@ const BEGREAT_NAV = [
   { key: '/begreat/occupations', icon: <BranchesOutlined />,  label: '职业管理' },
 ];
 
-const APP_OPTIONS: { label: string; value: AppName }[] = [
-  { label: 'Mandis', value: 'mandis' },
-  { label: 'BeGreat', value: 'begreat' },
-];
+const APP_LABEL: Record<string, string> = {
+  mandis: 'Mandis',
+  begreat: 'BeGreat',
+};
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentApp, setApp } = useAppStore();
+  const { currentApp } = useAppStore();
   const { clearAuth, mandisInfo, begreatInfo } = useAuthStore();
 
   const navItems = [...COMMON_NAV, ...(currentApp === 'mandis' ? MANDIS_NAV : BEGREAT_NAV)];
@@ -60,7 +60,7 @@ export default function AppLayout() {
 
   const handleLogout = () => {
     clearAuth(currentApp);
-    void navigate('/login');
+    void navigate(`/login/${currentApp}`);
   };
 
   return (
@@ -86,11 +86,7 @@ export default function AppLayout() {
           justifyContent: 'space-between',
           borderBottom: '1px solid #f0f0f0',
         }}>
-          <Segmented
-            options={APP_OPTIONS}
-            value={currentApp}
-            onChange={(val) => setApp(val as AppName)}
-          />
+          <Text strong style={{ fontSize: 16 }}>{APP_LABEL[currentApp]}</Text>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Avatar>{displayName[0]?.toUpperCase()}</Avatar>
             <Text>{displayName}</Text>

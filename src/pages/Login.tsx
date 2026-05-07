@@ -1,21 +1,39 @@
-import { useState } from 'react';
-import { Card, Form, Input, Button, Segmented, Typography, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Card, Form, Input, Button, Typography, message } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { useAppStore, type AppName } from '@/store/appStore';
 
 const { Title } = Typography;
 
+const APP_CONFIG: Record<AppName, { title: string; label: string }> = {
+  mandis: { title: 'Mandis 艺术工作室', label: 'Mandis' },
+  begreat: { title: 'BeGreat 职业测评', label: 'BeGreat' },
+};
+
+function resolveApp(param?: string): AppName {
+  if (param === 'begreat') return 'begreat';
+  return 'mandis';
+}
+
 export default function Login() {
-  const [app, setApp] = useState<AppName>('mandis');
+  const { app: appParam } = useParams<{ app?: string }>();
+  const app = resolveApp(appParam);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginMandis, loginBegreat } = useAuthStore();
   const { setApp: setAppStore } = useAppStore();
+  const cfg = APP_CONFIG[app];
+
+  // 无 app 参数时重定向到 /login/mandis
+  useEffect(() => {
+    if (!appParam) {
+      navigate('/login/mandis', { replace: true });
+    }
+  }, [appParam, navigate]);
 
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
-    // 必须在登录请求前设置 currentApp，以便 axios 拦截器注入正确的 token
     setAppStore(app);
     try {
       if (app === 'mandis') {
@@ -38,18 +56,8 @@ export default function Login() {
     }}>
       <Card style={{ width: 400 }}>
         <Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>
-          Commander
+          {cfg.title}
         </Title>
-        <div style={{ textAlign: 'center', marginBottom: 16 }}>
-          <Segmented
-            options={[
-              { label: 'Mandis', value: 'mandis' as const },
-              { label: 'BeGreat', value: 'begreat' as const },
-            ]}
-            value={app}
-            onChange={(val) => setApp(val as AppName)}
-          />
-        </div>
         <Form onFinish={handleSubmit} layout="vertical">
           <Form.Item label="账号" name="username" rules={[{ required: true, message: '请输入账号' }]}>
             <Input placeholder={app === 'mandis' ? 'admin 账号' : 'begreat 管理员账号'} />
@@ -59,7 +67,7 @@ export default function Login() {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading} block>
-              登录 {app === 'mandis' ? 'Mandis' : 'BeGreat'}
+              登录 {cfg.label}
             </Button>
           </Form.Item>
         </Form>

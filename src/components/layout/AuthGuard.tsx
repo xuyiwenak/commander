@@ -41,5 +41,5 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return (token && valid) ? <>{children}</> : <Navigate to="/login" replace />;
+  return (token && valid) ? <>{children}</> : <Navigate to={`/login/${currentApp}`} replace />;
 }

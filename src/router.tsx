@@ -38,6 +38,7 @@ const DashboardPage = () => Lazy(() => import('@/pages/DashboardPage'));
 export const router = createBrowserRouter(
   [
     { path: '/login', element: <Login /> },
+    { path: '/login/:app', element: <Login /> },
     {
       path: '/',
       element: <AuthGuard><AppLayout /></AuthGuard>,
