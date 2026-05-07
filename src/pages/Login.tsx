@@ -15,13 +15,14 @@ export default function Login() {
 
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
+    // 必须在登录请求前设置 currentApp，以便 axios 拦截器注入正确的 token
+    setAppStore(app);
     try {
       if (app === 'mandis') {
         await loginMandis(values.username, values.password);
       } else {
         await loginBegreat(values.username, values.password);
       }
-      setAppStore(app);
       void navigate('/dashboard');
     } catch {
       message.error('登录失败，请检查账号密码');

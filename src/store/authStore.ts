@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>()(
       begreatInfo: null,
 
       loginMandis: async (account, password) => {
-        const res = await http.post('/login/postPasswordLogin', { account, password });
+        const res = await http.post('/api/login/postPasswordLogin', { account, password });
         const token = res.data?.token ?? '';
         const info: AdminInfo = {
           account,

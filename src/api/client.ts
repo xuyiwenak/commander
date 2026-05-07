@@ -1,12 +1,6 @@
 import axios from 'axios';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
-import type { AppName } from '@/store/appStore';
-
-const APP_BASE: Record<AppName, string> = {
-  mandis: '/api',
-  begreat: '/begreat-admin',
-};
 
 export class ApiError extends Error {
   code: number;
@@ -19,11 +13,9 @@ export class ApiError extends Error {
 
 export const http = axios.create({ timeout: 15000 });
 
-// Request: 根据 currentApp 切换 baseURL + 注入 token
+// Request: 注入 token（不再动态设置 baseURL，所有 API 路径使用显式全路径）
 http.interceptors.request.use((config) => {
   const { currentApp } = useAppStore.getState();
-
-  config.baseURL = APP_BASE[currentApp];
 
   // 获取对应当前 app 的 token
   let token: string | null = null;

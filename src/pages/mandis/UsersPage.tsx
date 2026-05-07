@@ -13,7 +13,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    http.get('/admin/users').then((r) => setData((r.data as { list: User[] }).list ?? [])).finally(() => setLoading(false));
+    http.get('/api/admin/users').then((r) => setData((r.data as { list: User[] }).list ?? [])).finally(() => setLoading(false));
   }, []);
 
   return (

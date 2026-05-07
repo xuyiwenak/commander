@@ -13,7 +13,7 @@ export default function WorksPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    http.get('/admin/works').then((r) => setData((r.data as { list: Work[] }).list ?? [])).finally(() => setLoading(false));
+    http.get('/api/admin/works').then((r) => setData((r.data as { list: Work[] }).list ?? [])).finally(() => setLoading(false));
   }, []);
 
   return (

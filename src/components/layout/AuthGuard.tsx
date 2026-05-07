@@ -25,7 +25,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
     // begreat 后端验证 token
     import('@/api/client').then(({ http }) => {
-      http.get('/auth/me')
+      http.get('/begreat-admin/auth/me')
         .then(() => setValid(true))
         .catch(() => clearAuth(currentApp))
         .finally(() => setChecking(false));
