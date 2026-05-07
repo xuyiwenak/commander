@@ -31,7 +31,7 @@ ssh bn "bash -lc '
   export NVM_DIR=\"\$HOME/.nvm\"
   if [ -s \"\$NVM_DIR/nvm.sh\" ]; then
     . \"\$NVM_DIR/nvm.sh\"
-    nvm use 20 >/dev/null
+    nvm use 20 >/dev/null || echo \"[WARN] nvm node 20 not found, fallback to current node\"
   fi
 
   NODE_MAJOR=\$(node -v | sed -E \"s/^v([0-9]+).*/\\1/\")
