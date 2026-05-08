@@ -75,8 +75,8 @@ export default function AppLayout() {
   // 计算选中的 key：如果有子菜单匹配，展开父菜单并选中子项
   const selectedKeys = [location.pathname];
   const openKeys = COMMON_NAV
-    .filter((item) => 'children' in item && item.children?.some((child) => child.key === location.pathname))
-    .map((item) => item.key as string);
+    .filter((item: any) => item && 'children' in item && item.children?.some((child: any) => child?.key === location.pathname))
+    .map((item: any) => item.key);
 
   const handleLogout = () => {
     clearAuth(currentApp);

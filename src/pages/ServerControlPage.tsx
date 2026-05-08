@@ -3,6 +3,7 @@ import {
   Button, Typography, Space, Tag,
   Popconfirm, message, Spin, Switch, InputNumber,
   Alert, Tooltip,
+  Select,
 } from 'antd';
 import {
   ReloadOutlined, PlayCircleOutlined, StopOutlined,
@@ -66,7 +67,11 @@ export default function ServerControlPage() {
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [containers, setContainers] = useState<ContainerInfo[]>([]);
   const [containerError, setContainerError] = useState<string | null>(null);
-  const [setFetchingContainers] = useState(false);
+  const [_fc, setFetchingContainers] = useState(false);
+  // 日志文件选择
+  interface LogFileInfo { name: string; type: string; date: string; size: number; }
+  const [logFiles, setLogFiles] = useState<LogFileInfo[]>([]);
+  const [selectedLogFile, setSelectedLogFile] = useState('');
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { logEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [appLogs, operationLog]);
@@ -90,18 +95,34 @@ export default function ServerControlPage() {
     } finally { setFetchingContainers(false); }
   }, []);
 
+  // ── 日志文件列表 ──
+  const fetchLogFiles = useCallback(async () => {
+    try {
+      const res = await longHttp.get('/api/admin/system/app/log-files');
+      const files = (res.data as { files: LogFileInfo[] }).files ?? [];
+      setLogFiles(files);
+      // 默认选今天的最新 game 日志
+      if (!selectedLogFile && files.length > 0) {
+        const gameFiles = files.filter((f) => f.type === 'game');
+        setSelectedLogFile(gameFiles.length > 0 ? gameFiles[0].name : files[0].name);
+      }
+    } catch { /* ignore */ }
+  }, [selectedLogFile]);
+
   // ── 应用日志 ──
   const fetchAppLogs = useCallback(async () => {
     setFetchingLogs(true);
     try {
-      const res = await longHttp.get('/api/admin/system/app/logs', { params: { app: currentApp, tail: logTail } });
+      const params: Record<string, string | number> = { app: currentApp, tail: logTail };
+      if (selectedLogFile) params.file = selectedLogFile;
+      const res = await longHttp.get('/api/admin/system/app/logs', { params });
       const lines = (res.data as { lines: string[]; error?: string }).lines ?? [];
       const err = (res.data as { error?: string }).error;
       setAppLogs(err ? [`[Error] ${err}`] : lines.length === 0 ? ['(暂无日志)'] : lines);
     } catch (err: unknown) {
       setAppLogs([`[请求失败] ${axios.isAxiosError(err) ? err.message : String(err)}`]);
     } finally { setFetchingLogs(false); }
-  }, [currentApp, logTail]);
+  }, [currentApp, logTail, selectedLogFile]);
 
   useEffect(() => {
     if (!autoRefresh) return;
@@ -109,8 +130,8 @@ export default function ServerControlPage() {
     return () => clearInterval(t);
   }, [autoRefresh, fetchAppLogs]);
 
-  useEffect(() => { void fetchContainers(); void fetchAppLogs(); }, []); // eslint-disable-line
-  useEffect(() => { void fetchContainers(); void fetchAppLogs(); }, [currentApp]); // eslint-disable-line
+  useEffect(() => { void fetchContainers(); void fetchAppLogs(); void fetchLogFiles(); }, []); // eslint-disable-line
+  useEffect(() => { void fetchContainers(); void fetchAppLogs(); void fetchLogFiles(); }, [currentApp]); // eslint-disable-line
 
   // ── 操作 ──
   const runAction = useCallback(async (label: string, url: string, body?: Record<string, unknown>) => {
@@ -244,17 +265,42 @@ export default function ServerControlPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           borderBottom: '1px solid #f0f0f0',
         }}>
-          <Space>
+          <Space wrap>
             <FileTextOutlined style={{ color: '#86868b' }} />
             <Text style={{ fontSize: 13, fontWeight: 600, color: '#1d1d1f' }}>应用日志</Text>
             <Text type="secondary" style={{ fontSize: 11 }}>{appMeta.container}</Text>
+            <Select
+              size="small"
+              value={selectedLogFile}
+              onChange={(v) => { setSelectedLogFile(v); }}
+              style={{ width: 180, borderRadius: 8 }}
+              placeholder="选择日志文件"
+              popupMatchSelectWidth={false}
+            >
+              {(() => {
+                const types = [...new Set(logFiles.map((f) => f.type))];
+                return types.map((type) => ({
+                  label: type,
+                  options: logFiles.filter((f) => f.type === type).map((f) => ({
+                    value: f.name,
+                    label: `${f.date}  (${(f.size / 1024).toFixed(1)}KB)`,
+                  })),
+                }));
+              })().map((group) => (
+                <Select.OptGroup key={group.label} label={group.label}>
+                  {group.options.map((opt) => (
+                    <Select.Option key={opt.value} value={opt.value}>{opt.label}</Select.Option>
+                  ))}
+                </Select.OptGroup>
+              ))}
+            </Select>
           </Space>
           <Space>
             <Switch checked={autoRefresh} onChange={setAutoRefresh} size="small"
               checkedChildren="自动" unCheckedChildren="手动" />
             <Text style={{ fontSize: 11, color: '#86868b' }}>行数</Text>
-            <InputNumber size="small" min={50} max={2000} value={logTail}
-              onChange={(v) => setLogTail(v ?? 200)} style={{ width: 60, borderRadius: 8 }} />
+            <InputNumber size="small" min={50} max={5000} value={logTail}
+              onChange={(v) => setLogTail(v ?? 200)} style={{ width: 65, borderRadius: 8 }} />
             <Button size="small" icon={<ReloadOutlined />} onClick={fetchAppLogs}
               loading={fetchingLogs} disabled={loading !== null} style={{ borderRadius: 20 }}>
               刷新
