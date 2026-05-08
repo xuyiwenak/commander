@@ -21,9 +21,9 @@ http.interceptors.request.use((config) => {
   let token: string | null = null;
   const auth = useAuthStore.getState();
   if (currentApp === 'mandis') {
-    token = auth.mandisToken ?? localStorage.getItem('admin_token');
+    token = auth.mandisToken ?? localStorage.getItem('mandis_admin_token');
   } else {
-    token = auth.begreatToken ?? localStorage.getItem('admin_token');
+    token = auth.begreatToken ?? localStorage.getItem('begreat_admin_token');
   }
 
   if (token) {

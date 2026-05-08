@@ -35,6 +35,9 @@ const MandisFeedback = () => Lazy(() => import('@/pages/mandis/FeedbackPage'));
 // BI dashboard
 const DashboardPage = () => Lazy(() => import('@/pages/DashboardPage'));
 
+// server control
+const ServerControlPage = () => Lazy(() => import('@/pages/ServerControlPage'));
+
 export const router = createBrowserRouter(
   [
     { path: '/login', element: <Login /> },
@@ -46,6 +49,7 @@ export const router = createBrowserRouter(
         { index: true, element: <DashboardPage /> },
         { path: 'dashboard', element: <DashboardPage /> },
         { path: 'system', element: <SystemPage /> },
+        { path: 'server-control', element: <ServerControlPage /> },
         // mandis
         { path: 'mandis/users', element: <MandisUsers /> },
         { path: 'mandis/works', element: <MandisWorks /> },

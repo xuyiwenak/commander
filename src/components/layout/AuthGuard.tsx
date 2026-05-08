@@ -10,28 +10,47 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
   const [valid, setValid] = useState(false);
 
-  const token = currentApp === 'mandis' ? mandisToken : begreatToken;
+  const token = currentApp === 'mandis'
+    ? (mandisToken ?? localStorage.getItem('mandis_admin_token'))
+    : (begreatToken ?? localStorage.getItem('begreat_admin_token'));
 
   useEffect(() => {
+    let active = true;
+
     if (!token) {
+      setValid(false);
       setChecking(false);
       return;
     }
+
     // mandis 后端没有 /auth/me，只检查 token 存在
     if (currentApp === 'mandis') {
       setValid(true);
       setChecking(false);
       return;
     }
+
     // begreat 后端验证 token
     import('@/api/client').then(({ http }) => {
       http.get('/begreat-admin/auth/me')
-        .then(() => setValid(true))
-        .catch(() => clearAuth(currentApp))
-        .finally(() => setChecking(false));
+        .then(() => {
+          if (active) setValid(true);
+        })
+        .catch(() => {
+          if (active) {
+            setValid(false);
+            clearAuth(currentApp);
+          }
+        })
+        .finally(() => {
+          if (active) setChecking(false);
+        });
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return () => {
+      active = false;
+    };
+  }, [clearAuth, currentApp, token]);
 
   if (checking) {
     return (

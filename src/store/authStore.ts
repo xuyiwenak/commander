@@ -11,6 +11,20 @@ interface AdminInfo {
   level?: number;
 }
 
+// D3 双 Token 鉴权：各 app 使用独立 localStorage key，互不污染
+const TOKEN_KEY: Record<AppName, string> = {
+  mandis: 'mandis_admin_token',
+  begreat: 'begreat_admin_token',
+};
+
+function setTokenFallback(app: AppName, token: string): void {
+  localStorage.setItem(TOKEN_KEY[app], token);
+}
+
+function removeTokenFallback(app: AppName): void {
+  localStorage.removeItem(TOKEN_KEY[app]);
+}
+
 interface AuthState {
   mandisToken: string | null;
   begreatToken: string | null;
@@ -41,7 +55,7 @@ export const useAuthStore = create<AuthState>()(
           nickname: account,
           level: 1,
         };
-        localStorage.setItem('admin_token', token);
+        setTokenFallback('mandis', token);
         set({ mandisToken: token, mandisInfo: info });
       },
 
@@ -52,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
           username,
           adminId: res.data?.adminId,
         };
-        localStorage.setItem('admin_token', token);
+        setTokenFallback('begreat', token);
         set({ begreatToken: token, begreatInfo: info });
       },
 
@@ -66,13 +80,18 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearAuth: (app) => {
-        localStorage.removeItem('admin_token');
-        if (!app || app === 'mandis') set({ mandisToken: null, mandisInfo: null });
-        if (!app || app === 'begreat') set({ begreatToken: null, begreatInfo: null });
+        if (!app || app === 'mandis') {
+          removeTokenFallback('mandis');
+          set({ mandisToken: null, mandisInfo: null });
+        }
+        if (!app || app === 'begreat') {
+          removeTokenFallback('begreat');
+          set({ begreatToken: null, begreatInfo: null });
+        }
       },
 
       setAuth: (app, token, info) => {
-        localStorage.setItem('admin_token', token);
+        setTokenFallback(app, token);
         if (app === 'mandis') set({ mandisToken: token, mandisInfo: info });
         if (app === 'begreat') set({ begreatToken: token, begreatInfo: info });
       },

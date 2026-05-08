@@ -32,6 +32,11 @@ export default function Login() {
     }
   }, [appParam, navigate]);
 
+  // 进入登录页时即同步当前 app，避免持久化状态回写导致路由守卫判错
+  useEffect(() => {
+    setAppStore(app);
+  }, [app, setAppStore]);
+
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
     setAppStore(app);

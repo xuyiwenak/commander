@@ -13,6 +13,7 @@ import {
   SettingOutlined,
   BranchesOutlined,
   LogoutOutlined,
+  CloudServerOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';
@@ -22,8 +23,9 @@ const { Sider, Header, Content } = Layout;
 const { Text } = Typography;
 
 const COMMON_NAV = [
-  { key: '/dashboard',  icon: <DashboardOutlined />, label: 'BI 仪表盘' },
-  { key: '/system',     icon: <MonitorOutlined />,    label: '系统监控' },
+  { key: '/dashboard',      icon: <DashboardOutlined />,     label: 'BI 仪表盘' },
+  { key: '/system',         icon: <MonitorOutlined />,        label: '系统监控' },
+  { key: '/server-control', icon: <CloudServerOutlined />,    label: '服务器控制' },
 ];
 
 const MANDIS_NAV = [
