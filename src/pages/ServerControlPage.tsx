@@ -1,14 +1,14 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import {
-  Card, Button, Typography, Space, Tag,
-  Popconfirm, message, Spin, Switch, InputNumber, Empty,
+  Button, Typography, Space, Tag,
+  Popconfirm, message, Spin, Switch, InputNumber,
   Alert, Tooltip,
 } from 'antd';
 import {
   ReloadOutlined, PlayCircleOutlined, StopOutlined,
   BuildOutlined, SyncOutlined,
   DeleteOutlined, FileTextOutlined,
-  ThunderboltOutlined, CloudServerOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import { useAppStore, type AppName } from '@/store/appStore';
@@ -52,7 +52,6 @@ const CARD_STYLE: React.CSSProperties = {
   boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   border: 'none',
 };
-const SECTION_TITLE: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#1d1d1f', marginBottom: 8 };
 
 export default function ServerControlPage() {
   const currentApp = useAppStore((s) => s.currentApp);
@@ -67,7 +66,7 @@ export default function ServerControlPage() {
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [containers, setContainers] = useState<ContainerInfo[]>([]);
   const [containerError, setContainerError] = useState<string | null>(null);
-  const [fetchingContainers, setFetchingContainers] = useState(false);
+  const [setFetchingContainers] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { logEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [appLogs, operationLog]);
