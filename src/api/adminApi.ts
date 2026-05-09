@@ -6,6 +6,8 @@ export const authApi = {
     http.post('/begreat-admin/auth/login', { username, password }),
   me: () =>
     http.get('/begreat-admin/auth/me'),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    http.post('/begreat-admin/auth/change-password', { currentPassword, newPassword }),
 };
 
 // ── 鉴权 (mandis-admin) ──
@@ -16,6 +18,8 @@ export const mandisAuthApi = {
     http.get('/mandis-admin/auth/me'),
   initAdmin: (username: string, password: string) =>
     http.post('/mandis-admin/auth/init-admin', { username, password }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    http.post('/mandis-admin/auth/change-password', { currentPassword, newPassword }),
 };
 
 // ── 大盘 ──
