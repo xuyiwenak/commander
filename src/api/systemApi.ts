@@ -8,7 +8,7 @@ const TIMEOUT_DEFAULT = 15000;
 const TIMEOUT_LONG    = 600000;
 
 const BASE_URL: Record<AppName, string> = {
-  mandis:  '/api/admin/system',
+  mandis:  '/api/mandis-admin/system', // nginx strips /api/ prefix → /mandis-admin/system on backend
   begreat: '/begreat-admin/system',
 };
 
@@ -56,17 +56,19 @@ export interface SystemApi {
   appStop:        (app: AppName) => Promise<unknown>;
   appLogs:        (app: AppName, tail: number, file?: string) => Promise<unknown>;
   appLogFiles:    () => Promise<unknown>;
-  getNginxConfig: (file?: string) => Promise<unknown>;
-  saveNginxConfig:(file: string, content: string) => Promise<unknown>;
-  nginxTest:      () => Promise<unknown>;
-  nginxReload:    () => Promise<unknown>;
-  pruneImages:    () => Promise<unknown>;
+  getNginxConfig:    (file?: string) => Promise<unknown>;
+  saveNginxConfig:   (file: string, content: string) => Promise<unknown>;
+  nginxTest:         () => Promise<unknown>;
+  nginxReload:       () => Promise<unknown>;
+  pruneImages:       () => Promise<unknown>;
+  getRuntimeConfig:  () => Promise<unknown>;
+  saveRuntimeConfig: (config: unknown) => Promise<unknown>;
 }
 
 // ── 工厂函数 ──────────────────────────────────────────────────────────────────
 
-export function createSystemApi(appName: AppName): SystemApi {
-  const base    = BASE_URL[appName];
+export function createSystemApi(appName: AppName, baseUrl?: string): SystemApi {
+  const base    = baseUrl ?? BASE_URL[appName];
   const http    = createHttp(appName, TIMEOUT_DEFAULT);
   const longHttp = createHttp(appName, TIMEOUT_LONG);
 
@@ -82,9 +84,11 @@ export function createSystemApi(appName: AppName): SystemApi {
     appLogFiles:     () => http.get(`${base}/app/log-files`).then((r) => r.data),
     getNginxConfig:  (file) => http.get(`${base}/nginx-config`, { params: file ? { file } : {} }).then((r) => r.data),
     saveNginxConfig: (file, content) => longHttp.put(`${base}/nginx-config`, { file, content }).then((r) => r.data),
-    nginxTest:       () => longHttp.post(`${base}/nginx-test`).then((r) => r.data),
-    nginxReload:     () => longHttp.post(`${base}/nginx-reload`).then((r) => r.data),
-    pruneImages:     () => longHttp.post(`${base}/prune`).then((r) => r.data),
+    nginxTest:         () => longHttp.post(`${base}/nginx-test`).then((r) => r.data),
+    nginxReload:       () => longHttp.post(`${base}/nginx-reload`).then((r) => r.data),
+    pruneImages:       () => longHttp.post(`${base}/prune`).then((r) => r.data),
+    getRuntimeConfig:  () => http.get(`${base}/runtime-config`).then((r) => r.data),
+    saveRuntimeConfig: (config) => http.put(`${base}/runtime-config`, config).then((r) => r.data),
   };
 }
 

@@ -1,0 +1,9 @@
+{
+  "appName": "mandis",
+  "label": "Mandis 艺术工作室",
+  "systemApiBase": "/api/mandis-admin/system",
+  "dockerContainerName": "art-mandis",
+  "logAutoRefreshIntervalMs": 10000,
+  "containerRefreshDelayMs": 3000,
+  "defaultLogTail": 200
+}

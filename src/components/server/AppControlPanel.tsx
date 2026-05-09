@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import type { SystemApi } from '@/api/systemApi';
 import type { AppName } from '@/store/appStore';
+import { useRuntimeConfig } from '@/components/RuntimeConfig';
 
 const { Title, Text } = Typography;
 
@@ -22,20 +23,6 @@ const CARD_STYLE: React.CSSProperties = {
   boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   border: 'none',
 };
-
-const APP_LABEL: Record<AppName, string> = {
-  mandis:  'Mandis 艺术工作室',
-  begreat: 'BeGreat 职业测评',
-};
-
-const APP_CONTAINER: Record<AppName, string> = {
-  mandis:  'miniapp-mandis',
-  begreat: 'miniapp-begreat',
-};
-
-const LOG_AUTO_REFRESH_INTERVAL_MS = 10000;
-const CONTAINER_REFRESH_DELAY_MS   = 3000;
-const DEFAULT_LOG_TAIL = 200;
 
 // ── 类型 ──────────────────────────────────────────────────────────────────────
 
@@ -50,8 +37,13 @@ interface Props {
 }
 
 export default function AppControlPanel({ appName, api }: Props) {
-  const appLabel     = APP_LABEL[appName];
-  const appContainer = APP_CONTAINER[appName];
+  const {
+    label: appLabel,
+    dockerContainerName: appContainer,
+    logAutoRefreshIntervalMs: LOG_AUTO_REFRESH_INTERVAL_MS,
+    containerRefreshDelayMs:  CONTAINER_REFRESH_DELAY_MS,
+    defaultLogTail:           DEFAULT_LOG_TAIL,
+  } = useRuntimeConfig(appName);
 
   const [noCache,    setNoCache]    = useState(false);
   const [loading,    setLoading]    = useState<string | null>(null);

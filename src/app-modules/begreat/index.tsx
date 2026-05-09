@@ -33,8 +33,9 @@ const Invites         = lazy(() => import('@/pages/begreat/Invites'));
 const Config          = lazy(() => import('@/pages/begreat/Config'));
 const Occupations     = lazy(() => import('@/pages/begreat/Occupations'));
 const System          = lazy(() => import('@/pages/begreat/System'));
-const ServerControl   = lazy(() => import('@/pages/shared/ServerControl'));
-const NginxConfig     = lazy(() => import('@/pages/shared/NginxConfig'));
+const ServerControl       = lazy(() => import('@/pages/shared/ServerControl'));
+const NginxConfig         = lazy(() => import('@/pages/shared/NginxConfig'));
+const RuntimeConfigEditor = lazy(() => import('@/pages/shared/RuntimeConfigEditor'));
 
 export const begreatModule: AppModule = {
   appName: 'begreat',
@@ -62,8 +63,9 @@ export const begreatModule: AppModule = {
       icon: <CloudServerOutlined />,
       label: '服务器管理',
       children: [
-        { key: '/begreat/server-control',       icon: <CloudServerOutlined />, label: '应用控制台' },
-        { key: '/begreat/server-control/nginx', icon: <CodeOutlined />,        label: 'Nginx 配置' },
+        { key: '/begreat/server-control',                icon: <CloudServerOutlined />, label: '应用控制台' },
+        { key: '/begreat/server-control/nginx',          icon: <CodeOutlined />,        label: 'Nginx 配置' },
+        { key: '/begreat/server-control/runtime-config', icon: <SettingOutlined />,     label: '运行时配置' },
       ],
     },
     { key: '/begreat/config', icon: <SettingOutlined />, label: '系统配置' },
@@ -80,7 +82,8 @@ export const begreatModule: AppModule = {
     { path: 'config',                 element: s(Config) },
     { path: 'occupations',            element: s(Occupations) },
     { path: 'system',                 element: s(System) },
-    { path: 'server-control',         element: s(ServerControl) },
-    { path: 'server-control/nginx',   element: s(NginxConfig) },
+    { path: 'server-control',                    element: s(ServerControl) },
+    { path: 'server-control/nginx',              element: s(NginxConfig) },
+    { path: 'server-control/runtime-config',     element: s(RuntimeConfigEditor) },
   ],
 };
