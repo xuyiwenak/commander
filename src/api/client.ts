@@ -17,9 +17,6 @@ function isBegreatUrl(url: string): boolean {
   return url.startsWith('/begreat-admin');
 }
 
-function isMandisAdminUrl(url: string): boolean {
-  return url.startsWith('/mandis-admin');
-}
 
 // Request: 根据 URL 前缀注入对应 token，避免依赖 currentApp 状态造成 token 注入错误
 http.interceptors.request.use((config) => {
