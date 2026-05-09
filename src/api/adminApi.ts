@@ -55,3 +55,19 @@ export const occupationsApi = {
   seedPreview: () => http.get('/begreat-admin/occupations/seed'),
   seedImport: (reset = false) => http.post(`/begreat-admin/occupations/seed${reset ? '?reset=true' : ''}`),
 };
+
+// ── 题库 ──
+export const questionBankApi = {
+  list:   (params: Record<string, unknown>) => http.get('/begreat-admin/questions', { params }),
+  stats:  () => http.get('/begreat-admin/questions/stats'),
+  import: (records: unknown[], reset = false) => http.post('/begreat-admin/questions/import', { records, reset }),
+};
+
+// ── 常模 ──
+export const normsApi = {
+  versions: () => http.get('/begreat-admin/norms/versions'),
+  list:     (version: string, modelType?: string) =>
+    http.get('/begreat-admin/norms', { params: { version, modelType } }),
+  update:   (id: string, patch: Record<string, unknown>) => http.put(`/begreat-admin/norms/${id}`, patch),
+  activate: (normVersion: string) => http.post('/begreat-admin/norms/activate', { normVersion }),
+};
