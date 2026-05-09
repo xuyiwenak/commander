@@ -1,6 +1,6 @@
-# Commander 管理后台（对外说明）
+# Commander 管理后台
 
-`commander` 是 `Mandis` 与 `BeGreat` 两个业务系统的统一管理后台前端，面向运营、客服与技术支持人员使用。
+`commander` 是 统一管理后台前端，面向运营、客服与技术支持人员使用。
 
 它提供：
 
@@ -11,10 +11,7 @@
 - 服务器状态、应用控制与 Nginx 配置管理
 
 ## 适用范围
-
-- **Mandis 艺术工作室后台**
   - BI 仪表盘、系统监控、用户管理、作品管理、反馈管理、服务器管理
-- **BeGreat 职业测评后台**
   - 数据大盘、用户管理、测评记录、支付管理、掉单修复、邀请裂变、职业管理、系统配置、服务器管理
 
 ## 技术栈
@@ -60,9 +57,6 @@ npm run dev
 默认端口：`5175`  
 开发代理（见 `vite.config.ts`）：
 
-- `/api` -> `http://localhost:42002`
-- `/begreat-admin` -> `http://localhost:41002`
-
 > 说明：本项目依赖后端服务配合联调，若后端未启动会出现接口请求失败。
 
 ## 构建与预览
@@ -88,17 +82,6 @@ npm run preview
 3. 推送到远程仓库（`master`）
 4. 服务器拉取最新代码并部署静态资源
 
-示例（按实际环境调整）：
-
-```bash
-# 本地
-git add -A
-git commit -m "feat(scope): description"
-npm run build
-git push origin master
-
-# 服务器
-git pull
 # 将 dist 发布到 nginx 静态目录（按实际部署脚本执行）
 ```
 
