@@ -13,7 +13,7 @@ export default function FeedbackPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    http.get('/api/admin/feedback').then((r) => setData((r.data as { list: Feedback[] }).list ?? [])).finally(() => setLoading(false));
+    http.get('/mandis-admin/feedback').then((r) => setData((r.data as { list: Feedback[] }).list ?? [])).finally(() => setLoading(false));
   }, []);
 
   return (

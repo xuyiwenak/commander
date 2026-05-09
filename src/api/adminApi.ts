@@ -8,6 +8,16 @@ export const authApi = {
     http.get('/begreat-admin/auth/me'),
 };
 
+// ── 鉴权 (mandis-admin) ──
+export const mandisAuthApi = {
+  login: (username: string, password: string) =>
+    http.post('/mandis-admin/auth/login', { username, password }),
+  me: () =>
+    http.get('/mandis-admin/auth/me'),
+  initAdmin: (username: string, password: string) =>
+    http.post('/mandis-admin/auth/init-admin', { username, password }),
+};
+
 // ── 大盘 ──
 export const dashboardApi = {
   stats: () => http.get('/begreat-admin/dashboard/stats'),

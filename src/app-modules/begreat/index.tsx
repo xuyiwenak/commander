@@ -10,6 +10,9 @@ import {
   GiftOutlined,
   BranchesOutlined,
   SettingOutlined,
+  MonitorOutlined,
+  CloudServerOutlined,
+  CodeOutlined,
 } from '@ant-design/icons';
 import type { AppModule } from '../types';
 
@@ -29,6 +32,9 @@ const PaymentAnomalies = lazy(() => import('@/pages/begreat/PaymentAnomalies'));
 const Invites         = lazy(() => import('@/pages/begreat/Invites'));
 const Config          = lazy(() => import('@/pages/begreat/Config'));
 const Occupations     = lazy(() => import('@/pages/begreat/Occupations'));
+const System          = lazy(() => import('@/pages/begreat/System'));
+const ServerControl   = lazy(() => import('@/pages/begreat/ServerControl'));
+const NginxConfig     = lazy(() => import('@/pages/begreat/NginxConfig'));
 
 export const begreatModule: AppModule = {
   appName: 'begreat',
@@ -50,7 +56,17 @@ export const begreatModule: AppModule = {
       ],
     },
     { key: '/begreat/occupations', icon: <BranchesOutlined />, label: '职业管理' },
-    { key: '/begreat/config',      icon: <SettingOutlined />,  label: '系统配置' },
+    { key: '/begreat/system',      icon: <MonitorOutlined />,  label: '系统监控' },
+    {
+      key: 'begreat-server',
+      icon: <CloudServerOutlined />,
+      label: '服务器管理',
+      children: [
+        { key: '/begreat/server-control',       icon: <CloudServerOutlined />, label: '应用控制台' },
+        { key: '/begreat/server-control/nginx', icon: <CodeOutlined />,        label: 'Nginx 配置' },
+      ],
+    },
+    { key: '/begreat/config', icon: <SettingOutlined />, label: '系统配置' },
   ],
   routes: [
     { path: 'dashboard',              element: s(Dashboard) },
@@ -63,5 +79,8 @@ export const begreatModule: AppModule = {
     { path: 'invites',                element: s(Invites) },
     { path: 'config',                 element: s(Config) },
     { path: 'occupations',            element: s(Occupations) },
+    { path: 'system',                 element: s(System) },
+    { path: 'server-control',         element: s(ServerControl) },
+    { path: 'server-control/nginx',   element: s(NginxConfig) },
   ],
 };

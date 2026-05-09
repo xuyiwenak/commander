@@ -48,13 +48,9 @@ export const useAuthStore = create<AuthState>()(
       begreatInfo: null,
 
       loginMandis: async (account, password) => {
-        const res = await http.post('/api/login/postPasswordLogin', { account, password });
-        const token = res.data?.token ?? '';
-        const info: AdminInfo = {
-          account,
-          nickname: account,
-          level: 1,
-        };
+        const res = await http.post('/mandis-admin/auth/login', { username: account, password });
+        const token = (res.data as { token: string })?.token ?? '';
+        const info: AdminInfo = { username: account };
         setTokenFallback('mandis', token);
         set({ mandisToken: token, mandisInfo: info });
       },

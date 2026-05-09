@@ -17,6 +17,10 @@ function isBegreatUrl(url: string): boolean {
   return url.startsWith('/begreat-admin');
 }
 
+function isMandisAdminUrl(url: string): boolean {
+  return url.startsWith('/mandis-admin');
+}
+
 // Request: 根据 URL 前缀注入对应 token，避免依赖 currentApp 状态造成 token 注入错误
 http.interceptors.request.use((config) => {
   const url = config.url ?? '';
@@ -37,19 +41,19 @@ http.interceptors.response.use(
   (res) => {
     const url = (res.config?.url as string) ?? '';
 
-    if (!isBegreatUrl(url)) {
-      // mandis: { success: true, data: ... }
+    if (isBegreatUrl(url)) {
+      // begreat: { code, success, data: { data: ... } }
       const body = res.data as Record<string, unknown>;
-      if (!body.success) {
-        throw new ApiError((body.code as number) ?? res.status, (body.message as string) ?? 'Request failed');
-      }
-      return { ...res, data: body.data };
+      const inner = (body.data as Record<string, unknown>) ?? {};
+      return { ...res, data: inner.data ?? inner };
     }
 
-    // begreat: { code, success, data: { ... } }
+    // mandis / mandis-admin: { success: true, data: ... }
     const body = res.data as Record<string, unknown>;
-    const inner = (body.data as Record<string, unknown>) ?? {};
-    return { ...res, data: inner.data ?? inner };
+    if (!body.success) {
+      throw new ApiError((body.code as number) ?? res.status, (body.message as string) ?? 'Request failed');
+    }
+    return { ...res, data: body.data };
   },
   (err) => {
     const url = (err.config?.url as string) ?? '';

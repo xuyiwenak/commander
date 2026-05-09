@@ -13,7 +13,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    http.get('/api/admin/users').then((r) => setData((r.data as { list: User[] }).list ?? [])).finally(() => setLoading(false));
+    http.get('/mandis-admin/users').then((r) => setData((r.data as { list: User[] }).list ?? [])).finally(() => setLoading(false));
   }, []);
 
   return (
