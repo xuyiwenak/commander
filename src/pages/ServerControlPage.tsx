@@ -12,8 +12,8 @@ import {
   ThunderboltOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-import { useAppStore, type AppName } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
+import type { AppName } from '@/store/appStore';
 
 const { Title, Text } = Typography;
 
@@ -27,11 +27,8 @@ const APPS: Record<AppName, AppMeta> = {
 // ── axios ──
 const longHttp = axios.create({ timeout: 600000 });
 longHttp.interceptors.request.use((config) => {
-  const { currentApp } = useAppStore.getState();
   const auth = useAuthStore.getState();
-  const token = currentApp === 'mandis'
-    ? (auth.mandisToken ?? localStorage.getItem('mandis_admin_token'))
-    : (auth.begreatToken ?? localStorage.getItem('begreat_admin_token'));
+  const token = auth.mandisToken ?? localStorage.getItem('mandis_admin_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -55,7 +52,7 @@ const CARD_STYLE: React.CSSProperties = {
 };
 
 export default function ServerControlPage() {
-  const currentApp = useAppStore((s) => s.currentApp);
+  const currentApp: AppName = 'mandis';
   const appMeta = APPS[currentApp];
 
   const [noCache, setNoCache] = useState(false);

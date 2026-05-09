@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Card, Form, Input, Button, Typography, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
-import { useAppStore, type AppName } from '@/store/appStore';
+import { getModuleByApp } from '@/app-modules';
+import type { AppName } from '@/store/appStore';
 
 const { Title } = Typography;
 
-const APP_CONFIG: Record<AppName, { title: string; label: string }> = {
+const APP_CONFIG: Record<string, { title: string; label: string }> = {
   mandis: { title: 'Mandis 艺术工作室', label: 'Mandis' },
   begreat: { title: 'BeGreat 职业测评', label: 'BeGreat' },
 };
@@ -22,7 +23,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginMandis, loginBegreat } = useAuthStore();
-  const { setApp: setAppStore } = useAppStore();
   const cfg = APP_CONFIG[app];
 
   // 无 app 参数时重定向到 /login/mandis
@@ -32,21 +32,16 @@ export default function Login() {
     }
   }, [appParam, navigate]);
 
-  // 进入登录页时即同步当前 app，避免持久化状态回写导致路由守卫判错
-  useEffect(() => {
-    setAppStore(app);
-  }, [app, setAppStore]);
-
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
-    setAppStore(app);
     try {
       if (app === 'mandis') {
         await loginMandis(values.username, values.password);
       } else {
         await loginBegreat(values.username, values.password);
       }
-      void navigate(app === 'begreat' ? '/begreat/dashboard' : '/dashboard');
+      const mod = getModuleByApp(app);
+      void navigate(mod?.loginRedirect ?? '/mandis/dashboard');
     } catch {
       message.error('登录失败，请检查账号密码');
     } finally {

@@ -1,18 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Spin } from 'antd';
+import { http } from '@/api/client';
 import { useAuthStore } from '@/store/authStore';
-import { useAppStore } from '@/store/appStore';
+import type { AppName } from '@/store/appStore';
 
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { currentApp } = useAppStore();
+interface Props {
+  appName: AppName;
+  children: React.ReactNode;
+}
+
+export default function AuthGuard({ appName, children }: Props) {
   const { mandisToken, begreatToken, clearAuth } = useAuthStore();
   const [checking, setChecking] = useState(true);
   const [valid, setValid] = useState(false);
 
-  const token = currentApp === 'mandis'
-    ? (mandisToken ?? localStorage.getItem('mandis_admin_token'))
-    : (begreatToken ?? localStorage.getItem('begreat_admin_token'));
+  // 从各自的 localStorage key 读取 token，不依赖 currentApp store 状态
+  const token =
+    appName === 'mandis'
+      ? (mandisToken ?? localStorage.getItem('mandis_admin_token'))
+      : (begreatToken ?? localStorage.getItem('begreat_admin_token'));
 
   useEffect(() => {
     let active = true;
@@ -23,34 +30,27 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // mandis 后端没有 /auth/me，只检查 token 存在
-    if (currentApp === 'mandis') {
+    // mandis 后端没有 /auth/me，token 存在即视为有效
+    if (appName === 'mandis') {
       setValid(true);
       setChecking(false);
       return;
     }
 
-    // begreat 后端验证 token
-    import('@/api/client').then(({ http }) => {
-      http.get('/begreat-admin/auth/me')
-        .then(() => {
-          if (active) setValid(true);
-        })
-        .catch(() => {
-          if (active) {
-            setValid(false);
-            clearAuth(currentApp);
-          }
-        })
-        .finally(() => {
-          if (active) setChecking(false);
-        });
-    });
+    // begreat 后端验证 token 有效性
+    http
+      .get('/begreat-admin/auth/me')
+      .then(() => { if (active) setValid(true); })
+      .catch(() => {
+        if (active) {
+          setValid(false);
+          clearAuth(appName);
+        }
+      })
+      .finally(() => { if (active) setChecking(false); });
 
-    return () => {
-      active = false;
-    };
-  }, [clearAuth, currentApp, token]);
+    return () => { active = false; };
+  }, [appName, token, clearAuth]);
 
   if (checking) {
     return (
@@ -60,5 +60,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return (token && valid) ? <>{children}</> : <Navigate to={`/login/${currentApp}`} replace />;
+  return (token && valid)
+    ? <>{children}</>
+    : <Navigate to={`/login/${appName}`} replace />;
 }

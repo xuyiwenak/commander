@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Card, Col, Row, Statistic, Table, Typography, Empty, Skeleton, Alert } from 'antd';
 import { Line, Pie } from '@ant-design/plots';
+import { useLocation } from 'react-router-dom';
 import { http } from '@/api/client';
-import { useAppStore } from '@/store/appStore';
+import { getModuleByPath } from '@/app-modules';
 import { BI_PANELS } from '@/config/biPanels';
 
 const { Title } = Typography;
@@ -19,7 +20,8 @@ interface TrendItem {
 }
 
 export default function DashboardPage() {
-  const { currentApp } = useAppStore();
+  const { pathname } = useLocation();
+  const currentApp = getModuleByPath(pathname)?.appName ?? 'mandis';
   const [data, setData] = useState<DashboardData | null>(null);
   const [trends, setTrends] = useState<TrendItem[]>([]);
   const [loading, setLoading] = useState(true);

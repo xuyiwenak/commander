@@ -8,7 +8,6 @@ import {
   FolderOpenOutlined, EditOutlined, ReloadOutlined, CloudServerOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 
 const { Title, Text } = Typography;
@@ -18,11 +17,8 @@ const { TextArea } = Input;
 // ── axios ──
 const api = axios.create({ timeout: 600000 });
 api.interceptors.request.use((config) => {
-  const { currentApp } = useAppStore.getState();
   const auth = useAuthStore.getState();
-  const token = currentApp === 'mandis'
-    ? (auth.mandisToken ?? localStorage.getItem('mandis_admin_token'))
-    : (auth.begreatToken ?? localStorage.getItem('begreat_admin_token'));
+  const token = auth.mandisToken ?? localStorage.getItem('mandis_admin_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
