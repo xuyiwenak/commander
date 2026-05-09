@@ -52,7 +52,9 @@ http.interceptors.response.use(
     return { ...res, data: inner.data ?? inner };
   },
   (err) => {
-    if (err.response?.status === 401) {
+    const url = (err.config?.url as string) ?? '';
+    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/init-admin');
+    if (err.response?.status === 401 && !isAuthEndpoint) {
       const app = useAppStore.getState().currentApp;
       useAuthStore.getState().clearAuth(app);
       window.location.href = `/login/${app}`;
