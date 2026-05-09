@@ -49,10 +49,20 @@ export function RuntimeConfigProvider({ children }: { children: React.ReactNode 
 
   // 任意 app 登录后重新拉取，确保加载 Redis 中保存的自定义配置
   useEffect(() => {
+    let prevTokens = [
+      useAuthStore.getState().mandisToken,
+      useAuthStore.getState().begreatToken,
+    ] as const;
+
     return useAuthStore.subscribe(
-      (state) => [state.mandisToken, state.begreatToken] as const,
-      () => { void load(); },
-      { equalityFn: (a, b) => a[0] === b[0] && a[1] === b[1] },
+      (state) => {
+        const nextTokens = [state.mandisToken, state.begreatToken] as const;
+        const changed = prevTokens[0] !== nextTokens[0] || prevTokens[1] !== nextTokens[1];
+        prevTokens = nextTokens;
+        if (changed) {
+          void load();
+        }
+      },
     );
   }, [load]);
 
