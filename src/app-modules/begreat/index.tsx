@@ -33,8 +33,8 @@ const Invites         = lazy(() => import('@/pages/begreat/Invites'));
 const Config          = lazy(() => import('@/pages/begreat/Config'));
 const Occupations     = lazy(() => import('@/pages/begreat/Occupations'));
 const System          = lazy(() => import('@/pages/begreat/System'));
-const ServerControl   = lazy(() => import('@/pages/begreat/ServerControl'));
-const NginxConfig     = lazy(() => import('@/pages/begreat/NginxConfig'));
+const ServerControl   = lazy(() => import('@/pages/shared/ServerControl'));
+const NginxConfig     = lazy(() => import('@/pages/shared/NginxConfig'));
 
 export const begreatModule: AppModule = {
   appName: 'begreat',

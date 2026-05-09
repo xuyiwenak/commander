@@ -19,8 +19,8 @@ const s = (Comp: React.LazyExoticComponent<React.ComponentType>) => (
 
 const DashboardPage     = lazy(() => import('@/pages/DashboardPage'));
 const SystemPage        = lazy(() => import('@/pages/SystemPage'));
-const ServerControlPage = lazy(() => import('@/pages/ServerControlPage'));
-const NginxConfigPage   = lazy(() => import('@/pages/NginxConfigPage'));
+const ServerControl = lazy(() => import('@/pages/shared/ServerControl'));
+const NginxConfig   = lazy(() => import('@/pages/shared/NginxConfig'));
 const UsersPage         = lazy(() => import('@/pages/mandis/UsersPage'));
 const WorksPage         = lazy(() => import('@/pages/mandis/WorksPage'));
 const FeedbackPage      = lazy(() => import('@/pages/mandis/FeedbackPage'));
@@ -49,8 +49,8 @@ export const mandisModule: AppModule = {
   routes: [
     { path: 'dashboard',          element: s(DashboardPage) },
     { path: 'system',             element: s(SystemPage) },
-    { path: 'server-control',     element: s(ServerControlPage) },
-    { path: 'server-control/nginx', element: s(NginxConfigPage) },
+    { path: 'server-control',       element: s(ServerControl) },
+    { path: 'server-control/nginx', element: s(NginxConfig) },
     { path: 'users',              element: s(UsersPage) },
     { path: 'works',              element: s(WorksPage) },
     { path: 'feedback',           element: s(FeedbackPage) },

@@ -223,6 +223,66 @@ export function StatCard({ title, value, trend }: StatCardProps) {
 export default ({ title, value }: any) => <Card>...</Card>;
 ```
 
+### 2.5 多 App 共享组件规范（强制）
+
+**同一功能在不同 app（begreat / mandis）中必须共用同一套底层组件和页面，仅通过 `appName` 或 `api` 参数区分。禁止为不同 app 分别复制相同的组件或页面文件。**
+
+#### 规则
+
+1. **共享页面放 `pages/shared/`** — 任何跨 app 复用的页面都必须放在此目录，而非复制到各 app 子目录。
+2. **用 `appName` 参数驱动差异** — 页面/组件通过 `useLocation` 从 URL 读取当前 app，或由调用方显式传入 `appName`，再用 `createSystemApi(appName)` 等工厂函数创建对应实例。
+3. **禁止 app 专属的功能重复文件** — 如果两个文件只有 `appName`/`api` 不同，它们不应该存在两份；合并为一个共享文件。
+4. **app-module 只负责路由注册** — `app-modules/begreat/` 和 `app-modules/mandis/` 只声明导航和路由，不实现业务逻辑；业务逻辑在共享组件里。
+
+#### 正确示例
+
+```typescript
+// ✅ pages/shared/ServerControl.tsx — 一份代码，两个 app 共用
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+import AppControlPanel from '@/components/server/AppControlPanel';
+import { createSystemApi } from '@/api/systemApi';
+import type { AppName } from '@/store/appStore';
+
+export default function ServerControl() {
+  const appName = useLocation().pathname.split('/')[1] as AppName;
+  const api = useMemo(() => createSystemApi(appName), [appName]);
+  return <AppControlPanel appName={appName} api={api} />;
+}
+
+// ✅ app-modules/begreat/index.tsx — 指向共享页面
+const ServerControl = lazy(() => import('@/pages/shared/ServerControl'));
+
+// ✅ app-modules/mandis/index.tsx — 同一个页面
+const ServerControl = lazy(() => import('@/pages/shared/ServerControl'));
+```
+
+#### 错误示例
+
+```typescript
+// ❌ pages/begreat/ServerControl.tsx
+export default function BegreatServerControl() {
+  return <AppControlPanel appName="begreat" api={begreatSystemApi} />;
+}
+
+// ❌ pages/ServerControlPage.tsx（mandis 专用，内容几乎一样）
+export default function ServerControlPage() {
+  return <AppControlPanel appName="mandis" api={mandisSystemApi} />;
+}
+// 两个文件唯一的区别是 appName 和 api — 这就是重复，必须合并。
+```
+
+#### 判断标准
+
+> 如果删掉其中一个文件、只保留另一个并加上 `appName` 参数，功能不变 → 这两个文件就不应该独立存在。
+
+#### 新增 app 时的扩展方式
+
+1. 在 `store/appStore.ts` 的 `AppName` 联合类型中加入新 app 名称
+2. 在 `api/systemApi.ts` 的 `BASE_URL` 中加入新 app 的接口前缀
+3. 新建 `app-modules/<newApp>/index.tsx`，路由直接指向 `pages/shared/` 下已有的共享页面
+4. 只有该 app **独有**的业务页面，才在 `pages/<newApp>/` 下新建专属文件
+
 ---
 
 ## 3. Code Style
@@ -569,6 +629,7 @@ Before submitting code:
 - [ ] No magic numbers/strings — use named constants
 - [ ] Routes lazy-loaded for heavy pages
 - [ ] Commit message follows conventional format
+- [ ] 跨 app 相同功能使用 `pages/shared/` 共享页面，未复制为 app 专属文件（见 2.5）
 
 ---
 
