@@ -70,7 +70,7 @@ export default function SessionDetail() {
   return (
     <>
       <Space style={{ marginBottom: 8 }}>
-        <Button icon={<ArrowLeftOutlined />} type="text" onClick={() => void navigate('/sessions')}>返回列表</Button>
+        <Button icon={<ArrowLeftOutlined />} type="text" onClick={() => void navigate('/begreat/sessions')}>返回列表</Button>
       </Space>
       <Title level={4}>测评详情</Title>
 

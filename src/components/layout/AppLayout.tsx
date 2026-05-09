@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout, Menu, Button, Avatar, Typography } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -16,6 +16,9 @@ import {
   LogoutOutlined,
   CloudServerOutlined,
   CodeOutlined,
+  BarChartOutlined,
+  SolutionOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';
@@ -47,18 +50,54 @@ const MANDIS_NAV: NavItem[] = [
 ];
 
 const BEGREAT_NAV: NavItem[] = [
-  { key: '/begreat/sessions',    icon: <FileTextOutlined />,  label: '测评记录' },
-  { key: '/begreat/payments',    icon: <PayCircleOutlined />, label: '支付管理' },
-  { key: '/begreat/anomalies',   icon: <WarningOutlined />,   label: '掉单修复' },
-  { key: '/begreat/invites',     icon: <GiftOutlined />,      label: '邀请裂变' },
-  { key: '/begreat/config',      icon: <SettingOutlined />,   label: '系统配置' },
-  { key: '/begreat/occupations', icon: <BranchesOutlined />,  label: '职业管理' },
+  { key: '/begreat/dashboard', icon: <BarChartOutlined />, label: '数据大盘' },
+  {
+    key: 'begreat-ops',
+    icon: <SolutionOutlined />,
+    label: '运营支持',
+    children: [
+      { key: '/begreat/users',     icon: <UserOutlined />,      label: '用户管理' },
+      { key: '/begreat/sessions',  icon: <FileTextOutlined />,  label: '测评记录' },
+      { key: '/begreat/payments',  icon: <PayCircleOutlined />, label: '支付管理' },
+      { key: '/begreat/anomalies', icon: <WarningOutlined />,   label: '掉单修复' },
+      { key: '/begreat/invites',   icon: <GiftOutlined />,      label: '邀请裂变' },
+    ],
+  },
+  { key: '/begreat/occupations', icon: <BranchesOutlined />, label: '职业管理' },
+  { key: '/begreat/config',      icon: <SettingOutlined />,  label: '系统配置' },
 ];
 
 const APP_LABEL: Record<string, string> = {
   mandis: 'Mandis',
   begreat: 'BeGreat',
 };
+
+// 从 nav items + pathname 计算应展开的父级 key
+function computeOpenKeys(items: NavItem[], pathname: string): string[] {
+  return items
+    .filter((item: any) =>
+      item?.children?.some(
+        (child: any) => pathname === child?.key || pathname.startsWith(String(child?.key ?? '___') + '/')
+      )
+    )
+    .map((item: any) => String(item.key));
+}
+
+// 从 nav items + pathname 计算选中的叶子 key
+function computeSelectedKeys(items: NavItem[], pathname: string): string[] {
+  for (const item of items) {
+    const i = item as any;
+    if (i?.children) {
+      const matched = i.children.find(
+        (c: any) => pathname === c?.key || pathname.startsWith(String(c?.key ?? '___') + '/')
+      );
+      if (matched) return [String(matched.key)];
+    } else if (pathname === i?.key) {
+      return [String(i.key)];
+    }
+  }
+  return [];
+}
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -68,15 +107,28 @@ export default function AppLayout() {
   const { clearAuth, mandisInfo, begreatInfo } = useAuthStore();
 
   const navItems: NavItem[] = [...COMMON_NAV, ...(currentApp === 'mandis' ? MANDIS_NAV : BEGREAT_NAV)];
+  const [menuOpenKeys, setMenuOpenKeys] = useState<string[]>(() =>
+    computeOpenKeys(navItems, location.pathname)
+  );
+
+  // 切换 app 时重算展开状态
+  useEffect(() => {
+    const items = [...COMMON_NAV, ...(currentApp === 'mandis' ? MANDIS_NAV : BEGREAT_NAV)];
+    setMenuOpenKeys(computeOpenKeys(items, location.pathname));
+  }, [currentApp]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 路由变化时确保父级自动展开（如从页面内链接跳转到子路由）
+  useEffect(() => {
+    const newOpen = computeOpenKeys(navItems, location.pathname);
+    if (newOpen.length > 0) {
+      setMenuOpenKeys(prev => Array.from(new Set([...prev, ...newOpen])));
+    }
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const selectedKeys = computeSelectedKeys(navItems, location.pathname);
 
   const info = currentApp === 'mandis' ? mandisInfo : begreatInfo;
   const displayName = info?.nickname ?? info?.account ?? info?.username ?? 'Admin';
-
-  // 计算选中的 key：如果有子菜单匹配，展开父菜单并选中子项
-  const selectedKeys = [location.pathname];
-  const openKeys = COMMON_NAV
-    .filter((item: any) => item && 'children' in item && item.children?.some((child: any) => child?.key === location.pathname))
-    .map((item: any) => item.key);
 
   const handleLogout = () => {
     clearAuth(currentApp);
@@ -97,10 +149,11 @@ export default function AppLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={selectedKeys}
-          defaultOpenKeys={openKeys}
+          openKeys={menuOpenKeys}
+          onOpenChange={keys => setMenuOpenKeys(keys as string[])}
           items={navItems}
           onClick={({ key }) => {
-            if (!key.includes('server-group')) void navigate(key);
+            if (key.startsWith('/')) void navigate(key);
           }}
         />
       </Sider>

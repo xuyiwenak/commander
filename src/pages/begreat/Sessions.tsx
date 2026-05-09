@@ -68,7 +68,7 @@ export default function Sessions() {
     {
       title: '操作',
       render: (_: unknown, r: SessionRow) => (
-        <Button type="link" onClick={() => void navigate(`/sessions/${r.sessionId}`)}>详情</Button>
+        <Button type="link" onClick={() => void navigate(`/begreat/sessions/${r.sessionId}`)}>详情</Button>
       ),
     },
   ];

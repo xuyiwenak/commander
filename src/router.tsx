@@ -17,6 +17,8 @@ const Lazy = (imp: () => Promise<{ default: React.ComponentType }>) => {
 };
 
 const BegreatDashboard = () => Lazy(() => import('@/pages/begreat/Dashboard'));
+const BegreatUsers = () => Lazy(() => import('@/pages/begreat/Users'));
+const BegreatUserDetail = () => Lazy(() => import('@/pages/begreat/UserDetail'));
 const Sessions = () => Lazy(() => import('@/pages/begreat/Sessions'));
 const SessionDetail = () => Lazy(() => import('@/pages/begreat/SessionDetail'));
 const Payments = () => Lazy(() => import('@/pages/begreat/Payments'));
@@ -50,6 +52,8 @@ export const router = createBrowserRouter(
         { path: 'mandis/works', element: <MandisWorks /> },
         { path: 'mandis/feedback', element: <MandisFeedback /> },
         { path: 'begreat/dashboard', element: <BegreatDashboard /> },
+        { path: 'begreat/users', element: <BegreatUsers /> },
+        { path: 'begreat/users/:openId', element: <BegreatUserDetail /> },
         { path: 'begreat/sessions', element: <Sessions /> },
         { path: 'begreat/sessions/:sessionId', element: <SessionDetail /> },
         { path: 'begreat/payments', element: <Payments /> },

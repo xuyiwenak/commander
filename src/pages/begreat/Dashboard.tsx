@@ -58,7 +58,7 @@ export default function Dashboard() {
           type="error"
           showIcon
           message={`检测到 ${stats.anomalyCount} 笔掉单（支付成功但报告未解锁）`}
-          action={<a onClick={() => void navigate('/payments/anomalies')}>立即处理</a>}
+          action={<a onClick={() => void navigate('/begreat/anomalies')}>立即处理</a>}
           style={{ marginBottom: 16 }}
         />
       )}
