@@ -46,7 +46,7 @@ export default function Login() {
       } else {
         await loginBegreat(values.username, values.password);
       }
-      void navigate('/dashboard');
+      void navigate(app === 'begreat' ? '/begreat/dashboard' : '/dashboard');
     } catch {
       message.error('登录失败，请检查账号密码');
     } finally {

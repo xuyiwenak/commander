@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
+import type { AppName } from '@/store/appStore';
 
 export class ApiError extends Error {
   code: number;
@@ -13,18 +13,18 @@ export class ApiError extends Error {
 
 export const http = axios.create({ timeout: 15000 });
 
-// Request: 注入 token（不再动态设置 baseURL，所有 API 路径使用显式全路径）
-http.interceptors.request.use((config) => {
-  const { currentApp } = useAppStore.getState();
+function isBegreatUrl(url: string): boolean {
+  return url.startsWith('/begreat-admin');
+}
 
-  // 获取对应当前 app 的 token
-  let token: string | null = null;
+// Request: 根据 URL 前缀注入对应 token，避免依赖 currentApp 状态造成 token 注入错误
+http.interceptors.request.use((config) => {
+  const url = config.url ?? '';
   const auth = useAuthStore.getState();
-  if (currentApp === 'mandis') {
-    token = auth.mandisToken ?? localStorage.getItem('mandis_admin_token');
-  } else {
-    token = auth.begreatToken ?? localStorage.getItem('begreat_admin_token');
-  }
+
+  const token = isBegreatUrl(url)
+    ? (auth.begreatToken ?? localStorage.getItem('begreat_admin_token'))
+    : (auth.mandisToken ?? localStorage.getItem('mandis_admin_token'));
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -32,12 +32,12 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
-// Response: 格式归一化 + 401 处理
+// Response: 格式归一化 + 401 处理（同样基于 URL 前缀，不依赖 currentApp）
 http.interceptors.response.use(
   (res) => {
-    const app = useAppStore.getState().currentApp;
+    const url = (res.config?.url as string) ?? '';
 
-    if (app === 'mandis') {
+    if (!isBegreatUrl(url)) {
       // mandis: { success: true, data: ... }
       const body = res.data as Record<string, unknown>;
       if (!body.success) {
@@ -46,7 +46,7 @@ http.interceptors.response.use(
       return { ...res, data: body.data };
     }
 
-    // begreat: { data: { data: ... } }
+    // begreat: { code, success, data: { ... } }
     const body = res.data as Record<string, unknown>;
     const inner = (body.data as Record<string, unknown>) ?? {};
     return { ...res, data: inner.data ?? inner };
@@ -55,7 +55,7 @@ http.interceptors.response.use(
     const url = (err.config?.url as string) ?? '';
     const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/init-admin');
     if (err.response?.status === 401 && !isAuthEndpoint) {
-      const app = useAppStore.getState().currentApp;
+      const app: AppName = isBegreatUrl(url) ? 'begreat' : 'mandis';
       useAuthStore.getState().clearAuth(app);
       window.location.href = `/login/${app}`;
     }

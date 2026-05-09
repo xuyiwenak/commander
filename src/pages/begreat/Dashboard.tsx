@@ -34,8 +34,8 @@ export default function Dashboard() {
   useEffect(() => {
     Promise.all([dashboardApi.stats(), dashboardApi.trend(7)])
       .then(([sRes, tRes]) => {
-        setStats((sRes.data as { data: Stats }).data);
-        setTrend((tRes.data as { data: TrendRow[] }).data);
+        setStats(sRes.data as Stats);
+        setTrend((tRes.data as TrendRow[]) ?? []);
       })
       .finally(() => setLoading(false));
   }, []);
