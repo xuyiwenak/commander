@@ -8,6 +8,8 @@ export const authApi = {
     http.get('/begreat-admin/auth/me'),
   changePassword: (currentPassword: string, newPassword: string) =>
     http.post('/begreat-admin/auth/change-password', { currentPassword, newPassword }),
+  getTestMiniappToken: () =>
+    http.get('/begreat-admin/dev/test-token'),
 };
 
 // ── 鉴权 (mandis-admin) ──

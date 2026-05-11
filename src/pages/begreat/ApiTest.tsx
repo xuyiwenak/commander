@@ -1,14 +1,15 @@
 import { useState, useCallback, useRef } from 'react';
-import { Typography, Input, Button, Tag, Spin, Tooltip, Progress } from 'antd';
+import { Typography, Input, Button, Tag, Spin, Tooltip, Progress, message } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   ClockCircleOutlined,
   PlayCircleOutlined,
   ReloadOutlined,
-  InfoCircleOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
+import { authApi } from '@/api/adminApi';
 import type { TestCase, TestSuite, TestFlow, FlowStep, FlowCtx, CaseStatus } from './apiTestCases';
 import { TEST_SUITES, TEST_FLOWS } from './apiTestCases';
 
@@ -86,11 +87,29 @@ function flowProgress(flow: TestFlow, results: Map<string, CaseResult>): { done:
 // ── 主组件 ────────────────────────────────────────────
 export default function ApiTest() {
   const [miniappToken, setMiniappToken] = useState('');
+  const [tokenOpenId, setTokenOpenId] = useState('');
+  const [fetchingToken, setFetchingToken] = useState(false);
   const [results, setResults] = useState<Map<string, CaseResult>>(new Map());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const runningRef = useRef(false);
 
   const adminToken = localStorage.getItem('begreat_admin_token') ?? '';
+
+  const fetchTestToken = useCallback(async () => {
+    setFetchingToken(true);
+    try {
+      const res = await authApi.getTestMiniappToken();
+      const data = res.data as { token: string; openId: string };
+      setMiniappToken(data.token);
+      setTokenOpenId(data.openId);
+      void message.success(`已获取测试 Token，openId: ${data.openId}`);
+    } catch (err) {
+      const msg = (err as { message?: string }).message ?? '获取失败';
+      void message.error(msg.includes('devOpenids') ? '未配置 devOpenids，请先在运行时配置中添加测试 openId' : msg);
+    } finally {
+      setFetchingToken(false);
+    }
+  }, []);
 
   const updateResult = useCallback((result: CaseResult) => {
     setResults(prev => new Map(prev).set(result.caseId, result));
@@ -314,7 +333,7 @@ export default function ApiTest() {
         </div>
       )}
 
-      {/* Miniapp Token 输入 */}
+      {/* Miniapp Token */}
       <div style={{
         background: C.bgContainer,
         border: `1px solid ${C.border}`,
@@ -324,26 +343,49 @@ export default function ApiTest() {
         alignItems: 'center',
         gap: 10,
       }}>
-        <Tooltip title="用于「用户接口」套件测试。可从小程序开发者工具 Network 面板复制 Authorization header 的值（去掉 Bearer 前缀）">
-          <InfoCircleOutlined style={{ color: C.textMuted, flexShrink: 0 }} />
-        </Tooltip>
-        <Text style={{ color: C.textSecondary, fontSize: 12, flexShrink: 0 }}>Miniapp Token</Text>
-        <Input
-          placeholder="粘贴小程序用户 JWT（用于测试用户接口）"
-          value={miniappToken}
-          onChange={e => setMiniappToken(e.target.value)}
-          style={{
+        <Text style={{ color: C.textSecondary, fontSize: 12, flexShrink: 0 }}>用户 Token</Text>
+        <Tooltip title={miniappToken ? `openId: ${tokenOpenId || '手动输入'}` : '签发给 devOpenids[0] 配置的测试账号'}>
+          <div style={{
             flex: 1,
             background: C.bgElevated,
-            border: `1px solid ${C.border}`,
-            color: C.textPrimary,
+            border: `1px solid ${miniappToken ? C.accent + '60' : C.border}`,
+            borderRadius: 6,
+            padding: '4px 10px',
+            fontSize: 12,
+            color: miniappToken ? C.textPrimary : C.textMuted,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            cursor: 'default',
+            minWidth: 0,
+          }}>
+            {miniappToken || '未设置，点击右侧按钮一键获取'}
+          </div>
+        </Tooltip>
+        {miniappToken && (
+          <Button
+            size="small"
+            onClick={() => { setMiniappToken(''); setTokenOpenId(''); }}
+            style={{ background: 'transparent', borderColor: C.border, color: C.textMuted, flexShrink: 0, fontSize: 11 }}
+          >
+            清除
+          </Button>
+        )}
+        <Button
+          size="small"
+          icon={fetchingToken ? <Spin size="small" /> : <ThunderboltOutlined />}
+          onClick={() => void fetchTestToken()}
+          disabled={fetchingToken}
+          style={{
+            background: C.accent,
+            borderColor: C.accent,
+            color: '#fff',
+            flexShrink: 0,
             fontSize: 12,
           }}
-          allowClear
-        />
-        {miniappToken && (
-          <Tag color="blue" style={{ flexShrink: 0 }}>已设置</Tag>
-        )}
+        >
+          一键获取
+        </Button>
       </div>
 
       {/* 主体：左右布局 */}
