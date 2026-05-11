@@ -13,6 +13,7 @@ import {
   MonitorOutlined,
   CloudServerOutlined,
   CodeOutlined,
+  ApiOutlined,
 } from '@ant-design/icons';
 import type { AppModule } from '../types';
 
@@ -36,6 +37,7 @@ const System          = lazy(() => import('@/pages/begreat/System'));
 const ServerControl       = lazy(() => import('@/pages/shared/ServerControl'));
 const NginxConfig         = lazy(() => import('@/pages/shared/NginxConfig'));
 const RuntimeConfigEditor = lazy(() => import('@/pages/shared/RuntimeConfigEditor'));
+const ApiTest             = lazy(() => import('@/pages/begreat/ApiTest'));
 
 export const begreatModule: AppModule = {
   appName: 'begreat',
@@ -68,7 +70,8 @@ export const begreatModule: AppModule = {
         { key: '/begreat/server-control/runtime-config', icon: <SettingOutlined />,     label: '运行时配置' },
       ],
     },
-    { key: '/begreat/config', icon: <SettingOutlined />, label: '系统配置' },
+    { key: '/begreat/config',    icon: <SettingOutlined />, label: '系统配置' },
+    { key: '/begreat/api-test', icon: <ApiOutlined />,     label: '接口测试' },
   ],
   routes: [
     { path: 'dashboard',              element: s(Dashboard) },
@@ -85,5 +88,6 @@ export const begreatModule: AppModule = {
     { path: 'server-control',                    element: s(ServerControl) },
     { path: 'server-control/nginx',              element: s(NginxConfig) },
     { path: 'server-control/runtime-config',     element: s(RuntimeConfigEditor) },
+    { path: 'api-test',                          element: s(ApiTest) },
   ],
 };
