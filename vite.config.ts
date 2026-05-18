@@ -11,6 +11,7 @@ export default defineConfig({
   base: '/',
   server: {
     port: 5175,
+    host: true,
     proxy: {
       '/api': {
         target: 'http://localhost:42002',
@@ -19,6 +20,12 @@ export default defineConfig({
       '/begreat-admin': {
         target: 'http://localhost:41002',
         changeOrigin: true,
+      },
+      // 小程序接口代理：/begreat/xxx → http://localhost:41002/xxx
+      '/begreat': {
+        target: 'http://localhost:41002',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/begreat/, ''),
       },
     },
   },

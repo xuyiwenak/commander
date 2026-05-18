@@ -2,10 +2,11 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import AuthGuard from '@/components/layout/AuthGuard';
 import AppLayout from '@/components/layout/AppLayout';
 import Login from '@/pages/Login';
+import Portal from '@/pages/Portal';
 import { APP_MODULES } from '@/app-modules';
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/mandis/dashboard" replace /> },
+  { path: '/', element: <Portal /> },
   { path: '/login', element: <Login /> },
   { path: '/login/:app', element: <Login /> },
 
