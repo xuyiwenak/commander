@@ -23,6 +23,7 @@ const SystemPage        = lazy(() => import('@/pages/SystemPage'));
 const ServerControl       = lazy(() => import('@/pages/shared/ServerControl'));
 const NginxConfig         = lazy(() => import('@/pages/shared/NginxConfig'));
 const RuntimeConfigEditor = lazy(() => import('@/pages/shared/RuntimeConfigEditor'));
+const MiniappConfigPage   = lazy(() => import('@/pages/mandis/MiniappConfigPage'));
 const UsersPage         = lazy(() => import('@/pages/mandis/UsersPage'));
 const WorksPage         = lazy(() => import('@/pages/mandis/WorksPage'));
 const FeedbackPage      = lazy(() => import('@/pages/mandis/FeedbackPage'));
@@ -40,9 +41,10 @@ export const mandisModule: AppModule = {
       icon: <CloudServerOutlined />,
       label: '服务器管理',
       children: [
-        { key: '/mandis/server-control',               icon: <CloudServerOutlined />, label: '应用控制台' },
-        { key: '/mandis/server-control/nginx',         icon: <CodeOutlined />,        label: 'Nginx 配置' },
-        { key: '/mandis/server-control/runtime-config', icon: <SettingOutlined />,    label: '运行时配置' },
+        { key: '/mandis/server-control',                icon: <CloudServerOutlined />, label: '应用控制台' },
+        { key: '/mandis/server-control/nginx',          icon: <CodeOutlined />,        label: 'Nginx 配置' },
+        { key: '/mandis/server-control/runtime-config', icon: <SettingOutlined />,     label: '运行时配置' },
+        { key: '/mandis/miniapp-config',                icon: <SettingOutlined />,     label: '小程序域名' },
       ],
     },
     { key: '/mandis/users',    icon: <TeamOutlined />,   label: '用户管理' },
@@ -50,13 +52,14 @@ export const mandisModule: AppModule = {
     { key: '/mandis/feedback', icon: <MessageOutlined />, label: '反馈管理' },
   ],
   routes: [
-    { path: 'dashboard',          element: s(DashboardPage) },
-    { path: 'system',             element: s(SystemPage) },
-    { path: 'server-control',                    element: s(ServerControl) },
-    { path: 'server-control/nginx',              element: s(NginxConfig) },
-    { path: 'server-control/runtime-config',     element: s(RuntimeConfigEditor) },
-    { path: 'users',              element: s(UsersPage) },
-    { path: 'works',              element: s(WorksPage) },
-    { path: 'feedback',           element: s(FeedbackPage) },
+    { path: 'dashboard',                       element: s(DashboardPage) },
+    { path: 'system',                          element: s(SystemPage) },
+    { path: 'server-control',                  element: s(ServerControl) },
+    { path: 'server-control/nginx',            element: s(NginxConfig) },
+    { path: 'server-control/runtime-config',   element: s(RuntimeConfigEditor) },
+    { path: 'miniapp-config',                  element: s(MiniappConfigPage) },
+    { path: 'users',                           element: s(UsersPage) },
+    { path: 'works',                           element: s(WorksPage) },
+    { path: 'feedback',                        element: s(FeedbackPage) },
   ],
 };

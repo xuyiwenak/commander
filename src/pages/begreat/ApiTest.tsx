@@ -49,6 +49,15 @@ interface CaseResult {
 // ── 原始 axios（不经过 http 拦截器）────────────────────
 const raw = axios.create({ timeout: 15000 });
 
+// 统一解包 { code, success, data } 信封，把 data 层透传给 validate/extract
+function unwrap(res: unknown): unknown {
+  if (res && typeof res === 'object') {
+    const r = res as Record<string, unknown>;
+    if (r['success'] === true && 'data' in r) return r['data'];
+  }
+  return res;
+}
+
 // ── 状态图标 ──────────────────────────────────────────
 function StatusIcon({ status }: { status: CaseStatus }) {
   if (status === 'pass')    return <CheckCircleOutlined style={{ color: C.pass }} />;
@@ -147,7 +156,7 @@ export default function ApiTest() {
       const statusOk = res.status === step.expectedStatus;
       let validateResult = { pass: true, message: '' };
       if (statusOk && step.validate) {
-        validateResult = step.validate(res.status, res.data, ctx);
+        validateResult = step.validate(res.status, unwrap(res.data), ctx);
       }
 
       const pass = statusOk && validateResult.pass;
@@ -163,7 +172,7 @@ export default function ApiTest() {
         validateMessage: validateResult.message,
       });
 
-      const nextCtx = pass && step.extract ? { ...ctx, ...step.extract(res.data) } : ctx;
+      const nextCtx = pass && step.extract ? { ...ctx, ...step.extract(unwrap(res.data)) } : ctx;
       return { ok: pass, ctx: nextCtx };
     } catch (err) {
       updateResult({
@@ -211,7 +220,7 @@ export default function ApiTest() {
       const statusOk = res.status === tc.expectedStatus;
       let validateResult = { pass: true, message: '' };
       if (statusOk && tc.validate) {
-        validateResult = tc.validate(res.status, res.data);
+        validateResult = tc.validate(res.status, unwrap(res.data));
       }
 
       updateResult({

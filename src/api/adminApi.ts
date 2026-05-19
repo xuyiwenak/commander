@@ -12,6 +12,18 @@ export const authApi = {
     http.get('/begreat-admin/dev/test-token'),
 };
 
+// ── 小程序配置 (mandis-admin) ──
+export const mandisMiniappConfigApi = {
+  get: () => http.get<{ baseUrl: string }>('/api/mandis-admin/miniapp-config'),
+  save: (baseUrl: string) => http.put<{ baseUrl: string }>('/api/mandis-admin/miniapp-config', { baseUrl }),
+};
+
+// ── 小程序配置 (begreat-admin) ──
+export const begreatMiniappConfigApi = {
+  get: () => http.get<{ baseUrl: string }>('/begreat-admin/miniapp-config'),
+  save: (baseUrl: string) => http.put<{ baseUrl: string }>('/begreat-admin/miniapp-config', { baseUrl }),
+};
+
 // ── 鉴权 (mandis-admin) ──
 export const mandisAuthApi = {
   login: (username: string, password: string) =>

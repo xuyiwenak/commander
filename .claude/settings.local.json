@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(impeccable)",
+      "Bash(node *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk read *)",
+      "Bash(rtk npx *)",
+      "Bash(mkdir -p /Users/evan/art_theroy/commander/.impeccable/critique)",
+      "Bash(echo \"exit: $?\")",
+      "Skill(andrej-karpathy-skills:karpathy-guidelines)",
+      "Bash(rtk npm *)",
+      "Bash(rtk grep *)",
+      "Bash(rtk git *)",
+      "Bash(ssh bn *)",
+      "Bash(scp -r /Users/evan/art_theroy/commander/dist/. bn:/root/workspace/commander/dist/)",
+      "Bash(dig +short www.starryspark.com.cn)",
+      "Bash(dig +short commander.starryspark.com.cn)",
+      "Bash(rtk curl *)"
+    ]
+  }
+}
