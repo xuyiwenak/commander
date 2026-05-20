@@ -91,6 +91,12 @@ export const questionBankApi = {
   import: (records: unknown[], reset = false) => http.post('/begreat-admin/questions/import', { records, reset }),
 };
 
+// ── 作品 (mandis-admin) ──
+export const mandisWorksApi = {
+  list: (params: Record<string, unknown>) => http.get('/mandis-admin/works', { params }),
+  detail: (workId: string) => http.get(`/mandis-admin/works/${workId}`),
+};
+
 // ── 常模 ──
 export const normsApi = {
   versions: () => http.get('/begreat-admin/norms/versions'),

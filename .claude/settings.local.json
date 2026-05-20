@@ -16,7 +16,8 @@
       "Bash(scp -r /Users/evan/art_theroy/commander/dist/. bn:/root/workspace/commander/dist/)",
       "Bash(dig +short www.starryspark.com.cn)",
       "Bash(dig +short commander.starryspark.com.cn)",
-      "Bash(rtk curl *)"
+      "Bash(rtk curl *)",
+      "Bash(rtk tsc *)"
     ]
   }
 }
