@@ -17,7 +17,13 @@
       "Bash(dig +short www.starryspark.com.cn)",
       "Bash(dig +short commander.starryspark.com.cn)",
       "Bash(rtk curl *)",
-      "Bash(rtk tsc *)"
+      "Bash(rtk tsc *)",
+      "Bash(openssl x509 *)",
+      "Bash(bash scripts/release.sh)",
+      "Bash(scp /Users/evan/Desktop/a房树人/25134381_www.starryspark.com.cn_nginx/www.starryspark.com.cn.pem bn:/root/workspace/miniapp_pro_backend/nginx/ssl/www/fullchain.pem)",
+      "Bash(scp /Users/evan/Desktop/a房树人/25134381_www.starryspark.com.cn_nginx/www.starryspark.com.cn.key bn:/root/workspace/miniapp_pro_backend/nginx/ssl/www/privkey.pem)",
+      "Bash(curl -sk https://www.starryspark.com.cn/)",
+      "Bash(npm list *)"
     ]
   }
 }
