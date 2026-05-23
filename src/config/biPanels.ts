@@ -14,4 +14,7 @@ export const BI_PANELS: BiPanelConfig[] = [
   { key: 'uploadStats',    label: '上传统计',   visible: ['mandis'] },
   { key: 'qwenCosts',      label: 'Qwen 成本',  visible: ['mandis'] },
   { key: 'hotEndpoints',   label: '热门端点',   visible: ['mandis', 'begreat'] },
+  { key: 'dauTrend',       label: 'DAU 趋势',   visible: ['mandis'] },
+  { key: 'userFunnel',     label: '用户漏斗',   visible: ['mandis'] },
+  { key: 'emotionStats',   label: '情绪分布',   visible: ['mandis'] },
 ];
