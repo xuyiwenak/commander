@@ -18,6 +18,12 @@ export const mandisMiniappConfigApi = {
   save: (baseUrl: string) => http.put<{ baseUrl: string }>('/api/mandis-admin/miniapp-config', { baseUrl }),
 };
 
+// ── 便签词汇配置 (mandis-admin) ──
+export const mandisPresetTagsApi = {
+  get: () => http.get<{ tags: string[] }>('/api/mandis-admin/preset-tags'),
+  save: (tags: string[]) => http.put<{ tags: string[] }>('/api/mandis-admin/preset-tags', { tags }),
+};
+
 // ── 小程序配置 (begreat-admin) ──
 export const begreatMiniappConfigApi = {
   get: () => http.get<{ baseUrl: string }>('/begreat-admin/miniapp-config'),
