@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import beianIcon from '../assets/beian-icon.png';
 
 // ── 品牌常量 ──────────────────────────────────────────────────────────────────
 
 const COMPANY_CN  = '北京星火耀穹科技有限公司';
 const COMPANY_EN  = 'StarrySpark Technology Co., Ltd.';
 const ICP_MAIN    = '京ICP备2026019258号';
-const ICP_PUBLIC  = '';
+const ICP_PUBLIC  = '京公网安备11010502061608号';
 const ICP_LINK    = 'https://beian.miit.gov.cn/';
-const ICP_PSB_LINK = 'https://beian.mps.gov.cn/';
+const ICP_PSB_LINK = 'https://beian.mps.gov.cn/#/query/webSearch?code=11010502061608';
 
 const MANDIS_ADMIN_URL  = '/login/mandis';
 const BEGREAT_ADMIN_URL = '/login/begreat';
@@ -278,18 +279,14 @@ export default function Portal() {
             <div>© {new Date().getFullYear()} {COMPANY_CN}</div>
             <div style={{ marginTop: 2 }}>{COMPANY_EN}. All rights reserved.</div>
           </div>
-          <div style={{ fontSize: 12, color: '#4a5168', lineHeight: 1.9, textAlign: 'right' }}>
-            <a href={ICP_LINK} target="_blank" rel="noopener noreferrer" style={{ color: '#4a5168', textDecoration: 'none' }}>
+          <div style={FOOTER_RECORDS_STYLE}>
+            <a href={ICP_LINK} target="_blank" rel="noopener noreferrer" style={FOOTER_LINK_STYLE}>
               {ICP_MAIN}
             </a>
-            {ICP_PUBLIC && (
-              <>
-                <br />
-                <a href={ICP_PSB_LINK} target="_blank" rel="noopener noreferrer" style={{ color: '#4a5168', textDecoration: 'none' }}>
-                  {ICP_PUBLIC}
-                </a>
-              </>
-            )}
+            <a href={ICP_PSB_LINK} target="_blank" rel="noopener noreferrer" style={FOOTER_BEIAN_LINK_STYLE}>
+              <img src={beianIcon} alt="" aria-hidden="true" style={FOOTER_BEIAN_ICON_STYLE} />
+              <span>{ICP_PUBLIC}</span>
+            </a>
           </div>
         </footer>
       </div>
@@ -452,4 +449,36 @@ const FOOTER_STYLE: React.CSSProperties = {
   justifyContent: 'space-between',
   flexWrap: 'wrap',
   gap: 12,
+};
+
+const FOOTER_RECORDS_STYLE: React.CSSProperties = {
+  fontSize: 12,
+  color: '#4a5168',
+  lineHeight: 1.9,
+  textAlign: 'right',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  gap: 4,
+};
+
+const FOOTER_LINK_STYLE: React.CSSProperties = {
+  color: '#4a5168',
+  textDecoration: 'none',
+};
+
+const FOOTER_BEIAN_LINK_STYLE: React.CSSProperties = {
+  color: '#4a5168',
+  textDecoration: 'none',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  gap: 6,
+};
+
+const FOOTER_BEIAN_ICON_STYLE: React.CSSProperties = {
+  width: 16,
+  height: 16,
+  display: 'block',
+  objectFit: 'contain',
 };
