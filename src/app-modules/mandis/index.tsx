@@ -9,6 +9,7 @@ import {
   TeamOutlined,
   PictureOutlined,
   MessageOutlined,
+  MailOutlined,
 } from '@ant-design/icons';
 import type { AppModule } from '../types';
 
@@ -27,6 +28,7 @@ const MiniappConfigPage   = lazy(() => import('@/pages/mandis/MiniappConfigPage'
 const UsersPage         = lazy(() => import('@/pages/mandis/UsersPage'));
 const WorksPage         = lazy(() => import('@/pages/mandis/WorksPage'));
 const FeedbackPage      = lazy(() => import('@/pages/mandis/FeedbackPage'));
+const EmailConfigPage   = lazy(() => import('@/pages/mandis/EmailConfigPage'));
 
 export const mandisModule: AppModule = {
   appName: 'mandis',
@@ -50,6 +52,7 @@ export const mandisModule: AppModule = {
     { key: '/mandis/users',    icon: <TeamOutlined />,   label: '用户管理' },
     { key: '/mandis/works',    icon: <PictureOutlined />, label: '作品管理' },
     { key: '/mandis/feedback', icon: <MessageOutlined />, label: '反馈管理' },
+    { key: '/mandis/email-config', icon: <MailOutlined />, label: '邮件配置' },
   ],
   routes: [
     { path: 'dashboard',                       element: s(DashboardPage) },
@@ -61,5 +64,6 @@ export const mandisModule: AppModule = {
     { path: 'users',                           element: s(UsersPage) },
     { path: 'works',                           element: s(WorksPage) },
     { path: 'feedback',                        element: s(FeedbackPage) },
+    { path: 'email-config',                    element: s(EmailConfigPage) },
   ],
 };

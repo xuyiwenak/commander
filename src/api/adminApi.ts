@@ -24,6 +24,55 @@ export const mandisPresetTagsApi = {
   save: (tags: string[]) => http.put<{ tags: string[] }>('/api/mandis-admin/preset-tags', { tags }),
 };
 
+export type EmailTemplateLocale = 'zh-CN' | 'en';
+
+export interface EmailTemplateContent {
+  subject: string;
+  title: string;
+  body: string;
+  expiryText: string;
+  securityText: string;
+  footer: string;
+}
+
+export interface EmailTemplateInput {
+  zhCn: EmailTemplateContent;
+  en: EmailTemplateContent;
+  style: {
+    brandColor: string;
+    backgroundColor: string;
+    codeFontSize: number;
+    textAlign: 'left' | 'center';
+  };
+}
+
+export interface EmailTemplateView extends EmailTemplateInput {
+  updatedAt: string | null;
+  updatedBy: string | null;
+}
+
+export interface EmailProviderStatus {
+  configured: boolean;
+  accountName: string;
+  regionId: string;
+  fromAlias: string;
+  tagName: string;
+}
+
+export interface EmailConfigResponse {
+  template: EmailTemplateView;
+  provider: EmailProviderStatus;
+}
+
+export const mandisEmailConfigApi = {
+  get: () => http.get<EmailConfigResponse>('/api/mandis-admin/email-config'),
+  save: (template: EmailTemplateInput) =>
+    http.put<{ template: EmailTemplateView }>('/api/mandis-admin/email-config', template),
+  reset: () => http.post<{ template: EmailTemplateView }>('/api/mandis-admin/email-config/reset'),
+  test: (email: string, locale: EmailTemplateLocale, template: EmailTemplateInput) =>
+    http.post<{ sent: boolean }>('/api/mandis-admin/email-config/test', { email, locale, template }),
+};
+
 // ── 小程序配置 (begreat-admin) ──
 export const begreatMiniappConfigApi = {
   get: () => http.get<{ baseUrl: string }>('/begreat-admin/miniapp-config'),
