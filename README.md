@@ -73,16 +73,25 @@ npm run build
 npm run preview
 ```
 
-## 部署流程（当前约定）
+## 固定部署流程
 
-`commander` 使用单分支 `master` 进行发布：
+`commander` 使用单分支 `master` 发布。所有部署统一从项目目录执行：
 
-1. 本地开发并提交代码
-2. 执行 `npm run build`
-3. 推送到远程仓库（`master`）
-4. 服务器拉取最新代码并部署静态资源
+```bash
+./build.sh "feat(scope): describe the change"
+```
 
-# 将 dist 发布到 nginx 静态目录（按实际部署脚本执行）
+脚本会依次完成：本地构建、提交并推送源码、服务器同步源码、上传静态资源、
+原子更新入口文件以及线上校验。静态目录已经挂载到 Nginx 容器，部署网页不需要重启 Docker 或 reload Nginx。
+
+以下环境变量可覆盖默认部署目标：
+
+```bash
+COMMANDER_DEPLOY_HOST=bn
+COMMANDER_REMOTE_REPO_DIR=/root/workspace/commander
+COMMANDER_REMOTE_DIST_DIR=/root/workspace/commander/dist
+COMMANDER_DEPLOY_URL=https://www.starryspark.com.cn/art
+COMMANDER_DEPLOY_BRANCH=master
 ```
 
 ## 账号与权限
@@ -105,4 +114,3 @@ npm run preview
 - 新增业务模块：在 `src/app-modules/` 新建模块并注册到 `src/app-modules/index.ts`
 - 新增页面：放入 `src/pages/`，并在对应模块路由中挂载
 - 新增接口：在 `src/api/` 扩展并保持统一返回处理方式
-

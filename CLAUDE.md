@@ -59,17 +59,10 @@ Dual-token system: begreat and mandis each have independent JWT tokens stored in
 ## Deployment
 
 ```bash
-# 1. Build locally
-npm run build
-
-# 2. Push to remote
-git push origin master
-
-# 3. Deploy to server (copy dist to nginx container)
-ssh bn
-cd /root/workspace/commander
-git pull
-docker cp dist/. miniapp-nginx:/usr/share/nginx/html/commander/
+./build.sh "feat(scope): describe the change"
 ```
 
-**Note:** commander has a single `master` branch — no release merge needed.
+The script builds locally, synchronizes source through Git, uploads `dist`, publishes `index.html` last, and verifies
+the live page. The static directory is bind-mounted into Nginx, so frontend deployments do not restart Docker.
+
+**Note:** commander has a single `master` branch — no release merge is needed.
