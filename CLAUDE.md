@@ -59,7 +59,7 @@ Dual-token system: begreat and mandis each have independent JWT tokens stored in
 ## Deployment
 
 ```bash
-./build.sh "feat(scope): describe the change"
+../deploy.sh commander "feat(scope): describe the change"
 ```
 
 The script builds locally, synchronizes source through Git, uploads `dist`, publishes `index.html` last, and verifies

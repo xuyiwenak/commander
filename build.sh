@@ -5,7 +5,7 @@ set -euo pipefail
 readonly DEPLOY_HOST="${COMMANDER_DEPLOY_HOST:-bn}"
 readonly REMOTE_REPO_DIR="${COMMANDER_REMOTE_REPO_DIR:-/root/workspace/commander}"
 readonly REMOTE_DIST_DIR="${COMMANDER_REMOTE_DIST_DIR:-${REMOTE_REPO_DIR}/dist}"
-readonly DEPLOY_URL="${COMMANDER_DEPLOY_URL:-https://www.starryspark.com.cn/art}"
+readonly DEPLOY_URL="${COMMANDER_DEPLOY_URL:-https://commander.starryspark.com.cn/}"
 readonly DEPLOY_BRANCH="${COMMANDER_DEPLOY_BRANCH:-master}"
 readonly DEFAULT_COMMIT_MESSAGE='chore(deploy): update commander'
 

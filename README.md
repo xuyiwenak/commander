@@ -75,10 +75,11 @@ npm run preview
 
 ## 固定部署流程
 
-`commander` 使用单分支 `master` 发布。所有部署统一从项目目录执行：
+`commander` 是 BeGreat 与 Mandis 共用的管理后台，使用单分支 `master` 发布。
+从工作区根目录执行统一发布入口：
 
 ```bash
-./build.sh "feat(scope): describe the change"
+./deploy.sh commander "feat(scope): describe the change"
 ```
 
 脚本会依次完成：本地构建、提交并推送源码、服务器同步源码、上传静态资源、
@@ -90,7 +91,7 @@ npm run preview
 COMMANDER_DEPLOY_HOST=bn
 COMMANDER_REMOTE_REPO_DIR=/root/workspace/commander
 COMMANDER_REMOTE_DIST_DIR=/root/workspace/commander/dist
-COMMANDER_DEPLOY_URL=https://www.starryspark.com.cn/art
+COMMANDER_DEPLOY_URL=https://commander.starryspark.com.cn/
 COMMANDER_DEPLOY_BRANCH=master
 ```
 

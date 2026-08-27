@@ -7,7 +7,6 @@ import { APP_MODULES } from '@/app-modules';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Portal /> },
-  { path: '/art', element: <Navigate to="/begreat" replace /> },
   { path: '/login', element: <Login /> },
   { path: '/login/:app', element: <Login /> },
 
