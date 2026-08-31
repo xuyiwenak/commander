@@ -15,6 +15,7 @@ const ICP_PSB_LINK =
 const MANDIS_ADMIN_URL = "/login/mandis";
 const BEGREAT_ADMIN_URL = "/login/begreat";
 const MANDIS_WEB_URL = "/art/";
+const MANDIS_EDUCATION_URL = "/teacher/";
 
 // ── Logo Mark SVG ─────────────────────────────────────────────────────────────
 
@@ -131,6 +132,7 @@ interface ProductCardProps {
   desc: string;
   adminUrl: string;
   actionLabel?: string;
+  standalone?: boolean;
   icon: React.ReactNode;
 }
 
@@ -141,6 +143,7 @@ function ProductCard({
   desc,
   adminUrl,
   actionLabel = "进入管理后台",
+  standalone = false,
   icon,
 }: ProductCardProps) {
   const navigate = useNavigate();
@@ -210,7 +213,9 @@ function ProductCard({
       </div>
 
       <button
-        onClick={() => navigate(adminUrl)}
+        onClick={() =>
+          standalone ? window.location.assign(adminUrl) : navigate(adminUrl)
+        }
         style={{ ...BTN_BASE, borderColor: accent, color: accent }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.background = accent;
@@ -403,6 +408,30 @@ export default function Portal() {
                   aria-hidden="true"
                 >
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              }
+            />
+            <ProductCard
+              accent="#f5a623"
+              nameEn="MANDIS EDUCATION"
+              nameCn="原色有感 · 教师课堂"
+              adminUrl={MANDIS_EDUCATION_URL}
+              actionLabel="进入教育版"
+              standalone
+              desc="面向教师与研究者的艺术教育课堂，支持课堂创建、学生匿名参与、进度管理与研究数据导出。"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#f5a623"
+                  strokeWidth="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M3 10.5 12 5l9 5.5L12 16z" />
+                  <path d="M6.5 12.7V17c2.9 2.2 8.1 2.2 11 0v-4.3" />
+                  <path d="M21 10.5V16" />
                 </svg>
               }
             />
